@@ -1,16 +1,20 @@
-const jsonServer = require('json-server');
+const express = require('express');
 const cors = require('cors');
-const server = jsonServer.create();
-const router = jsonServer.router('db.json');
-const middlewares = jsonServer.defaults();
+const db = require('./db.json');
 
-server.use(cors());
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-server.use(middlewares);
-server.use(router);
-
-const port = process.env.PORT || 3000;
-
-server.listen(port, () => {
-  console.log(`JSON Server is running on port ${port}`);
+// Endpoint para obter os dados do db.json
+app.get('/api/projects', (req, res) => {
+  res.json(db.projects || []);
 });
+
+// Porta será configurada automaticamente pelo Vercel
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
+
+module.exports = app;
