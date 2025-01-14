@@ -12,28 +12,46 @@ app.get('/api/projects', (req, res) => {
 });
 
 app.post('/api/projects', (req, res) => {
-  res.json(db.projects || []);
-});
+  const newProject = req.body;
 
-app.patch('/api/projects/:project.id', (req, res) => {
-  res.json(db.projects || []);
+  if (!newProject || !newProject.name || !newProject.budget) {
+      return res.status(400).json({ message: "Invalid project data" });
+  }
+
+  db.projects.push(newProject);
+
+  res.status(201).json(newProject);
 });
 
 app.delete('/api/projects/:id', (req, res) => {
-  res.json(db.projects || []);
+  const { id } = req.params;
+  const projectIndex = db.projects.findIndex((project) => project.id === id);
+
+  if (projectIndex === -1) {
+    return res.status(404).json({ message: "Project not found" });
+  }
+
+  const deletedProject = db.projects.splice(projectIndex, 1);
+
+  res.status(200).json({ message: "Project deleted successfully", project: deletedProject });
 });
 
-// app.post('/api/projects', (req, res) => {
-//   const newProject = req.body;
+app.patch('/api/projects/:id', (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body; 
 
-//   if (!newProject || !newProject.name || !newProject.budget) {
-//       return res.status(400).json({ message: "Invalid project data" });
-//   }
+  const projectIndex = db.projects.findIndex((project) => project.id === id);
 
-//   db.projects.push(newProject);
+  if (projectIndex === -1) {
+    return res.status(404).json({ message: "Project not found" });
+  }
 
-//   res.status(201).json(newProject);
-// });
+  const updatedProject = { ...db.projects[projectIndex], ...updatedData };
+
+  db.projects[projectIndex] = updatedProject;
+
+  res.status(200).json(updatedProject);
+});
 
 // Endpoint para obter os dados das categorias 
 app.get('/api/categories', (req, res) => {
