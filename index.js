@@ -36,7 +36,7 @@ app.post('/api/projects', (req, res) => {
 
 app.delete('/api/projects/:id', (req, res) => {
   const { id } = req.params;
-  const projectIndex = db.projects.findIndex((project) => project.id === id);
+  const projectIndex = db.projects.findIndex((project) => project.id === id.toString());
 
   if (projectIndex === -1) {
     return res.status(404).json({ message: "Project not found" });
