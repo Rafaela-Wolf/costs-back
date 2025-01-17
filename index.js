@@ -6,14 +6,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// app.get('/api/projects', (req, res) => {
-//   res.json(db.projects || []);
-// });
+app.get('/api/projects', (req, res) => {
+  res.json(db.projects || []);
+});
 
 app.get('/api/projects/:id', (req, res) => {
   const { id } = req.params;
 
-  const project = db.projects.find((project) => project.id === Number(id)); // Se os IDs forem números
+  const project = db.projects.find((project) => project.id === Number(id));
 
   if (!project) {
     return res.status(404).json({ message: "Project not found" });
