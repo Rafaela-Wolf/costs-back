@@ -6,9 +6,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Endpoint para obter os dados dos projetos
-app.get('/api/projects', (req, res) => {
-  res.json(db.projects || []);
+// app.get('/api/projects', (req, res) => {
+//   res.json(db.projects || []);
+// });
+
+app.get('/api/projects/:id', (req, res) => {
+  const { id } = req.params;
+
+  const project = db.projects.find((project) => project.id === Number(id)); // Se os IDs forem números
+
+  if (!project) {
+    return res.status(404).json({ message: "Project not found" });
+  }
+
+  res.status(200).json(project);
 });
 
 app.post('/api/projects', (req, res) => {
@@ -53,7 +64,6 @@ app.patch('/api/projects/:id', (req, res) => {
   res.status(200).json(updatedProject);
 });
 
-// Endpoint para obter os dados das categorias 
 app.get('/api/categories', (req, res) => {
   res.json(db.categories || []);
 });
